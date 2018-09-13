@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Path
 {
     public partial class Form1 : Form
     {
-        PathList _list = new PathList();
+        PathTrace _path = new PathTrace();
         bool _mouseDown;
 
         public Form1()
@@ -24,34 +25,34 @@ namespace Path
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             //antialias
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            _list.Render(e.Graphics);
+            _path.RenderPathDebug(e.Graphics);
 
-            Vector2 pos = _list.GetCurrentPos();
+            Vector2 pos = _path.GetCurrentPos();
 
             e.Graphics.FillEllipse(Brushes.Red, pos.X - 5, pos.Y - 5, 10, 10);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            _list.Step(0.025f);
+            _path.StepProgress(0.025f);
             Invalidate();
         }
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
-            _list.AddTarget(new TargetNode(e.X, e.Y));
+            _path.AddPathPoint(e.X, e.Y);
         }
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            _list.ResetPath();
+            _path.ResetProgress();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            _list.ClearPath();
+            _path.ClearPath();
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -67,28 +68,30 @@ namespace Path
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
             if (_mouseDown)
-                _list.AddTarget(new TargetNode(e.X, e.Y));
+                _path.AddPathPoint(e.X, e.Y);
         }
     }
 
-    class PathList
+    class PathTrace
     {
-        private TargetNode _node;
+        private TargetNode _start;
 
-        public void Render(Graphics g)
+        public void RenderPathDebug(Graphics g)
         {
-            _node?.Render(g);
+            _start?.Render(g);
         }
 
-        public void AddTarget(TargetNode target)
+        public void AddPathPoint(float x, float y)
         {
-            if (_node == null)
+            var target = new TargetNode(x, y);
+
+            if (_start == null)
             {
-                _node = target;
+                _start = target;
                 return;
             }
 
-            var t = _node;
+            var t = _start;
 
             while (t.Target != null)
                 t = t.Target;
@@ -96,6 +99,35 @@ namespace Path
             t.Target = target;
             t.Dir = Vector2.Normalize(t.Target.Pos - t.Pos);
             t.Distance = Vector2.Distance(t.Pos, t.Target.Pos);
+        }
+
+        public void StepProgress(float step)
+        {
+            var node = GetActiveNode();
+
+            if (node == null || node.Target == null)
+                return;
+
+            node.Progress += step * 200 / node.Distance;
+        }
+
+        public void ResetProgress()
+        {
+            if (_start == null)
+                return;
+
+            var node = _start;
+
+            while (node != null)
+            {
+                node.Progress = 0;
+                node = node.Target;
+            }
+        }
+
+        public void ClearPath()
+        {
+            _start = null;
         }
 
         public Vector2 GetCurrentPos()
@@ -108,41 +140,12 @@ namespace Path
             return node.Pos + node.Dir * node.Progress * node.Distance; //TODO - Distance might be temporary
         }
 
-        public void Step(float step)
-        {
-            var node = GetActiveNode();
-
-            if (node == null || node.Target == null)
-                return;
-
-            node.Progress += step * 200 / node.Distance;
-        }
-
-        public void ResetPath()
-        {
-            if (_node == null)
-                return;
-
-            var node = _node;
-
-            while (node != null)
-            {
-                node.Progress = 0;
-                node = node.Target;
-            }
-        }
-
-        public void ClearPath()
-        {
-            _node = null;
-        }
-
         private TargetNode GetActiveNode()
         {
-            if (_node == null)
+            if (_start == null)
                 return null;
 
-            var t = _node;
+            var t = _start;
 
             while (t.Target != null)
             {
@@ -154,33 +157,33 @@ namespace Path
 
             return t;
         }
-    }
 
-    class TargetNode
-    {
-        public Vector2 Pos;
-        public Vector2 Dir;
-
-        public float Progress;
-
-        public float Distance;
-
-        public TargetNode Target;
-
-        public TargetNode(float x, float y)
+        class TargetNode
         {
-            Pos.X = x;
-            Pos.Y = y;
-        }
+            public Vector2 Pos;
+            public Vector2 Dir;
 
-        public void Render(Graphics g)
-        {
-            if (Target == null)
-                return;
+            public float Progress;
 
-            g.DrawLine(Pens.Black, Pos.X, Pos.Y, Target.Pos.X, Target.Pos.Y);
+            public float Distance;
 
-            Target.Render(g);
+            public TargetNode Target;
+
+            public TargetNode(float x, float y)
+            {
+                Pos.X = x;
+                Pos.Y = y;
+            }
+
+            public void Render(Graphics g)
+            {
+                if (Target == null)
+                    return;
+
+                g.DrawLine(Pens.Black, Pos.X, Pos.Y, Target.Pos.X, Target.Pos.Y);
+
+                Target.Render(g);
+            }
         }
     }
 }
