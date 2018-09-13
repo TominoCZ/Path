@@ -15,6 +15,7 @@ namespace Path
     public partial class Form1 : Form
     {
         PathTrace _path = new PathTrace();
+
         bool _mouseDown;
 
         public Form1()
@@ -27,7 +28,7 @@ namespace Path
             //antialias
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            _path.RenderPathDebug(e.Graphics);
+            //_path.RenderPathDebug(e.Graphics);
 
             Vector2 pos = _path.GetCurrentPos();
 
@@ -72,7 +73,7 @@ namespace Path
         }
     }
 
-    class PathTrace
+    public class PathTrace
     {
         private TargetNode _start;
 

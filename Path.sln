@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Path", "Path\Path.csproj", "{68D6421D-6556-4388-A6C3-3211DB6FB953}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerDefenseMapEditor", "TowerDefenseMapEditor\TowerDefenseMapEditor.csproj", "{4A06D0E3-CC99-4F89-88BC-95C35128BD0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerDefense", "TowerDefense\TowerDefense.csproj", "{58E2BC5B-E971-4F67-85D3-7788B9C3BC96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{68D6421D-6556-4388-A6C3-3211DB6FB953}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68D6421D-6556-4388-A6C3-3211DB6FB953}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68D6421D-6556-4388-A6C3-3211DB6FB953}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A06D0E3-CC99-4F89-88BC-95C35128BD0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A06D0E3-CC99-4F89-88BC-95C35128BD0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A06D0E3-CC99-4F89-88BC-95C35128BD0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A06D0E3-CC99-4F89-88BC-95C35128BD0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58E2BC5B-E971-4F67-85D3-7788B9C3BC96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58E2BC5B-E971-4F67-85D3-7788B9C3BC96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58E2BC5B-E971-4F67-85D3-7788B9C3BC96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58E2BC5B-E971-4F67-85D3-7788B9C3BC96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
