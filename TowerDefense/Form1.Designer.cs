@@ -28,18 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.render = new System.Windows.Forms.Timer(this.components);
             this.chbDebug = new System.Windows.Forms.CheckBox();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // render
-            // 
-            this.render.Enabled = true;
-            this.render.Interval = 15;
-            this.render.Tick += new System.EventHandler(this.render_Tick);
             // 
             // chbDebug
             // 
@@ -59,7 +51,7 @@
             this.numericUpDown1.Size = new System.Drawing.Size(59, 20);
             this.numericUpDown1.TabIndex = 1;
             this.numericUpDown1.Value = new decimal(new int[] {
-            10,
+            3,
             0,
             0,
             0});
@@ -85,8 +77,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Timer render;
         private System.Windows.Forms.CheckBox chbDebug;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
     }

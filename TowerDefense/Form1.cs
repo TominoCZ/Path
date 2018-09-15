@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Numerics;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TowerDefense
@@ -30,7 +31,10 @@ namespace TowerDefense
             var d = ofd.ShowDialog();
 
             if (d != DialogResult.OK)
+            {
+                Application.Exit();
                 return;
+            }
 
             string mapName = Path.GetFileNameWithoutExtension(ofd.FileName);
 
@@ -53,6 +57,34 @@ namespace TowerDefense
             }
 
             ClientSize = _image.Size;
+
+            new Thread(() =>
+            {
+                while (true)
+                {
+                    if (Visible && Created && IsHandleCreated && !Disposing)
+                    {
+                        for (int i = _enemies.Count - 1; i >= 0; i--)
+                        {
+                            Enemy enemy = _enemies[i];
+
+                            enemy.Move();
+
+                            if (enemy.ReachedTarget)
+                            {
+                                _enemies.Remove(enemy);
+                            }
+                        }
+
+                        BeginInvoke((MethodInvoker)Invalidate);
+                    }
+
+                    Thread.Sleep(15);
+                }
+            })
+            { IsBackground = true }.Start();
+
+            Invalidate();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -63,19 +95,25 @@ namespace TowerDefense
                 return;
 
             e.Graphics.DrawImageUnscaled(_image, 0, 0);
+            
+            if (chbDebug.Checked)
+            {
+                if (_points.Count >= 2)
+                {
+                    e.Graphics.DrawLines(Pens.LimeGreen, _points.ToArray());
+
+                    foreach (var p in _points)
+                    {
+                        e.Graphics.FillRectangle(Brushes.GreenYellow, p.X - 2, p.Y - 2, 4, 4);
+                    }
+                }
+            }
 
             for (int i = 0; i < _enemies.Count; i++)
             {
                 Enemy enemy = _enemies[i];
 
-                var pos = enemy.GetPos();
-
-                e.Graphics.FillEllipse(Brushes.Black, pos.X - 8, pos.Y - 8, 16, 16);
-            }
-
-            if (_points.Count >= 2 && chbDebug.Checked)
-            {
-                e.Graphics.DrawLines(Pens.Black, _points.ToArray());
+                enemy.Render(e.Graphics);
             }
         }
 
@@ -93,23 +131,6 @@ namespace TowerDefense
             enemy.SetPath(trace);
 
             _enemies.Add(enemy);
-        }
-
-        private void render_Tick(object sender, EventArgs e)
-        {
-            for (int i = _enemies.Count - 1; i >= 0; i--)
-            {
-                Enemy enemy = _enemies[i];
-
-                enemy.Move();
-
-                if (enemy.ReachedTarget)
-                {
-                    _enemies.Remove(enemy);
-                }
-            }
-
-            Invalidate();
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
@@ -134,11 +155,22 @@ namespace TowerDefense
             StepSize = speed;
         }
 
+        public void Render(Graphics g)
+        {
+            var pos = GetPos();
+            var dir = GetDir();
+
+            Pen p = new Pen(Color.Red, 12);
+
+            g.DrawLine(p, pos.X, pos.Y, pos.X + dir.X * 11, pos.Y + dir.Y * 11);
+            g.FillEllipse(Brushes.Black, pos.X - 8, pos.Y - 8, 16, 16);
+        }
+
         public void SetPath(PathTrace path)
         {
             _trace = path;
         }
-        
+
         public void Move()
         {
             _trace.Step(StepSize);
@@ -147,6 +179,11 @@ namespace TowerDefense
         public Vector2 GetPos()
         {
             return _trace.GetCurrentPos();
+        }
+
+        public Vector2 GetDir()
+        {
+            return _trace.GetCurrentDir();
         }
     }
 }

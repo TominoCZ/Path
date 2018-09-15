@@ -15,7 +15,7 @@ namespace PathHelper
             {
                 if (_start == null)
                     return false;
-                
+
                 var node = _start;
 
                 while (node?.Target.Target != null)
@@ -121,7 +121,17 @@ namespace PathHelper
             if (node == null)
                 return Vector2.Zero;
 
-            return node.GetCurrentPos();
+            return node.Pos + node.Dir * node.Progress;
+        }
+
+        public Vector2 GetCurrentDir()
+        {
+            var node = GetActiveNode();
+
+            if (node == null)
+                return Vector2.Zero;
+
+            return node.Dir;
         }
 
         public List<PointF> GetPoints()
@@ -159,8 +169,6 @@ namespace PathHelper
         {
             private TargetNode _target;
 
-            private Vector2 _dir;
-
             private float _progress;
 
             public float Progress
@@ -173,7 +181,8 @@ namespace PathHelper
 
             public bool Finished => Progress == Distance;
 
-            public Vector2 Pos { get; }
+            public Vector2 Pos { get; private set; }
+            public Vector2 Dir { get; private set; }
 
             public TargetNode Target
             {
@@ -184,7 +193,7 @@ namespace PathHelper
 
                     if (_target != null)
                     {
-                        _dir = Vector2.Normalize(_target.Pos - Pos);
+                        Dir = Vector2.Normalize(_target.Pos - Pos);
                         Distance = Vector2.Distance(Pos, _target.Pos);
                     }
                 }
@@ -193,11 +202,6 @@ namespace PathHelper
             public TargetNode(float x, float y)
             {
                 Pos = new Vector2(x, y);
-            }
-
-            public Vector2 GetCurrentPos()
-            {
-                return Pos + _dir * Progress;
             }
         }
     }
