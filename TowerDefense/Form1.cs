@@ -29,30 +29,30 @@ namespace TowerDefense
 
             var d = ofd.ShowDialog();
 
-            if (d == DialogResult.OK)
+            if (d != DialogResult.OK)
+                return;
+
+            string mapName = Path.GetFileNameWithoutExtension(ofd.FileName);
+
+            string[] lines = File.ReadAllLines(ofd.FileName);
+            _image = Image.FromFile(Path.Combine(Path.GetDirectoryName(ofd.FileName), mapName + ".png"));
+
+            foreach (var line in lines)
             {
-                string mapName = Path.GetFileNameWithoutExtension(ofd.FileName);
+                var s = line.Replace(" ", "");
 
-                string[] lines = File.ReadAllLines(ofd.FileName);
-                _image = Image.FromFile(Path.Combine(Path.GetDirectoryName(ofd.FileName), mapName + ".png"));
+                if (s.Length == 0)
+                    continue;
 
-                foreach (var line in lines)
-                {
-                    var s = line.Replace(" ", "");
+                string[] split = s.Split(';');
 
-                    if (s.Length == 0)
-                        continue;
+                int x = int.Parse(split[0]);
+                int y = int.Parse(split[1]);
 
-                    string[] split = s.Split(';');
-
-                    int x = int.Parse(split[0]);
-                    int y = int.Parse(split[1]);
-
-                    _points.Add(new Point(x, y));
-                }
-
-                ClientSize = _image.Size;
+                _points.Add(new Point(x, y));
             }
+
+            ClientSize = _image.Size;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -81,7 +81,7 @@ namespace TowerDefense
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
-            var enemy = new Enemy();
+            var enemy = new Enemy((float)numericUpDown1.Value);
 
             PathTrace trace = new PathTrace();
 
@@ -97,27 +97,48 @@ namespace TowerDefense
 
         private void render_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < _enemies.Count; i++)
+            for (int i = _enemies.Count - 1; i >= 0; i--)
             {
                 Enemy enemy = _enemies[i];
+
                 enemy.Move();
+
+                if (enemy.ReachedTarget)
+                {
+                    _enemies.Remove(enemy);
+                }
             }
 
             Invalidate();
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < _enemies.Count; i++)
+            {
+                _enemies[i].StepSize = (float)numericUpDown1.Value;
+            }
         }
     }
 
     internal class Enemy
     {
+        public bool ReachedTarget => _trace.IsFinished;
+
         public float StepSize = 2f;
 
         private PathTrace _trace;
+
+        public Enemy(float speed)
+        {
+            StepSize = speed;
+        }
 
         public void SetPath(PathTrace path)
         {
             _trace = path;
         }
-
+        
         public void Move()
         {
             _trace.Step(StepSize);

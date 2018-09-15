@@ -9,6 +9,24 @@ namespace PathHelper
     {
         private TargetNode _start;
 
+        public bool IsFinished
+        {
+            get
+            {
+                if (_start == null)
+                    return false;
+                
+                var node = _start;
+
+                while (node?.Target.Target != null)
+                {
+                    node = node.Target;
+                }
+
+                return node.Finished;
+            }
+        }
+
         public void Add(float x, float y)
         {
             var target = new TargetNode(x, y);

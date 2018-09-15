@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.render = new System.Windows.Forms.Timer(this.components);
             this.chbDebug = new System.Windows.Forms.CheckBox();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // render
@@ -50,11 +52,25 @@
             this.chbDebug.Text = "Debug";
             this.chbDebug.UseVisualStyleBackColor = false;
             // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(76, 11);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(59, 20);
+            this.numericUpDown1.TabIndex = 1;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.chbDebug);
             this.DoubleBuffered = true;
             this.Name = "Form1";
@@ -62,6 +78,7 @@
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseClick);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -71,6 +88,7 @@
 
         private System.Windows.Forms.Timer render;
         private System.Windows.Forms.CheckBox chbDebug;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }
 
