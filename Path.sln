@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Path", "Path\Path.csproj", "{68D6421D-6556-4388-A6C3-3211DB6FB953}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathHelper", "Path\PathHelper.csproj", "{68D6421D-6556-4388-A6C3-3211DB6FB953}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerDefenseMapEditor", "TowerDefenseMapEditor\TowerDefenseMapEditor.csproj", "{4A06D0E3-CC99-4F89-88BC-95C35128BD0F}"
 EndProject

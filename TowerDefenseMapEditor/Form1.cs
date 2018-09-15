@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TowerDefenseMapEditor
 {
     public partial class Form1 : Form
     {
-        Image _image;
-        string _imageName;
+        private Image _image;
+        private string _imageName;
 
-        List<Point> _path = new List<Point>();
+        private List<Point> _path = new List<Point>();
 
         public Form1()
         {
@@ -94,13 +91,18 @@ namespace TowerDefenseMapEditor
 
                 foreach (var p in _path)
                 {
-                    sb.AppendLine(p.X.ToString() + ";" + p.Y.ToString());
+                    sb.AppendLine(p.X + ";" + p.Y);
                 }
 
                 string fileName = Path.Combine(fbd.SelectedPath, _imageName + ".tdm");
+                string imageFileName = Path.Combine(fbd.SelectedPath, _imageName + ".png");
 
                 File.WriteAllText(fileName, sb.ToString());
-                _image.Save(Path.Combine(fbd.SelectedPath, _imageName + ".png"));
+
+                if (!File.Exists(imageFileName))
+                {
+                    _image.Save(imageFileName);
+                }
             }
         }
 

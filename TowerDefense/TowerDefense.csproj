@@ -81,9 +81,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Path\Path.csproj">
+    <ProjectReference Include="..\Path\PathHelper.csproj">
       <Project>{68d6421d-6556-4388-a6c3-3211db6fb953}</Project>
-      <Name>Path</Name>
+      <Name>PathHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

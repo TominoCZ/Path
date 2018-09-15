@@ -1,29 +1,28 @@
-﻿using Path;
+﻿using PathHelper;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TowerDefense
 {
     public partial class Form1 : Form
     {
-        Image _image;
+        private Image _image;
 
-        List<Point> _points = new List<Point>();
-        List<Enemy> _enemies = new List<Enemy>();
+        private List<PointF> _points = new List<PointF>();
+        private List<Enemy> _enemies = new List<Enemy>();
 
         public Form1()
         {
             InitializeComponent();
+        }
 
+        private void Form1_Shown(object sender, EventArgs e)
+        {
             OpenFileDialog ofd = new OpenFileDialog();
 
             ofd.Filter = "Map File|*.TDM";
@@ -32,10 +31,10 @@ namespace TowerDefense
 
             if (d == DialogResult.OK)
             {
-                string mapName = System.IO.Path.GetFileNameWithoutExtension(ofd.FileName);
+                string mapName = Path.GetFileNameWithoutExtension(ofd.FileName);
 
                 string[] lines = File.ReadAllLines(ofd.FileName);
-                _image = Image.FromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ofd.FileName), mapName + ".png"));
+                _image = Image.FromFile(Path.Combine(Path.GetDirectoryName(ofd.FileName), mapName + ".png"));
 
                 foreach (var line in lines)
                 {
@@ -58,6 +57,11 @@ namespace TowerDefense
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            if (_image == null)
+                return;
+
             e.Graphics.DrawImageUnscaled(_image, 0, 0);
 
             for (int i = 0; i < _enemies.Count; i++)
@@ -68,6 +72,27 @@ namespace TowerDefense
 
                 e.Graphics.FillEllipse(Brushes.Black, pos.X - 8, pos.Y - 8, 16, 16);
             }
+
+            if (_points.Count >= 2 && chbDebug.Checked)
+            {
+                e.Graphics.DrawLines(Pens.Black, _points.ToArray());
+            }
+        }
+
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            var enemy = new Enemy();
+
+            PathTrace trace = new PathTrace();
+
+            foreach (var point in _points)
+            {
+                trace.Add(point.X, point.Y);
+            }
+
+            enemy.SetPath(trace);
+
+            _enemies.Add(enemy);
         }
 
         private void render_Tick(object sender, EventArgs e)
@@ -80,29 +105,13 @@ namespace TowerDefense
 
             Invalidate();
         }
-
-        private void Form1_MouseClick(object sender, MouseEventArgs e)
-        {
-            var enemy = new Enemy();
-
-            PathTrace trace = new PathTrace();
-
-            foreach (var point in _points)
-            {
-                trace.AddPathPoint(point.X, point.Y);
-            }
-
-            enemy.SetPath(trace);
-
-            _enemies.Add(enemy);
-        }
     }
 
-    class Enemy
+    internal class Enemy
     {
-        public float StepSize = 0.025f;
+        public float StepSize = 2f;
 
-        PathTrace _trace;
+        private PathTrace _trace;
 
         public void SetPath(PathTrace path)
         {
@@ -111,7 +120,7 @@ namespace TowerDefense
 
         public void Move()
         {
-            _trace.StepProgress(StepSize);
+            _trace.Step(StepSize);
         }
 
         public Vector2 GetPos()
