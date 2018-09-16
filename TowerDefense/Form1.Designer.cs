@@ -37,6 +37,7 @@
             // 
             this.chbDebug.AutoSize = true;
             this.chbDebug.BackColor = System.Drawing.Color.Transparent;
+            this.chbDebug.ForeColor = System.Drawing.Color.White;
             this.chbDebug.Location = new System.Drawing.Point(12, 12);
             this.chbDebug.Name = "chbDebug";
             this.chbDebug.Size = new System.Drawing.Size(58, 17);
@@ -46,6 +47,8 @@
             // 
             // numericUpDown1
             // 
+            this.numericUpDown1.BackColor = System.Drawing.Color.Black;
+            this.numericUpDown1.ForeColor = System.Drawing.Color.White;
             this.numericUpDown1.Location = new System.Drawing.Point(76, 11);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(59, 20);
@@ -61,6 +64,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.chbDebug);

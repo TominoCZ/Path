@@ -90,12 +90,26 @@ namespace TowerDefense
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
+            
             if (_image == null)
                 return;
 
+            float wr = (float)ClientSize.Width / _image.Width;
+            float hr = (float)ClientSize.Height / _image.Height;
+
+            float scale = Math.Min(wr, hr);
+
+            float sw = scale * _image.Width;
+            float sh = scale * _image.Height;
+
+            float ox = ClientSize.Width / 2f - sw / 2;
+            float oy = ClientSize.Height / 2f - sh / 2;
+
+            e.Graphics.TranslateTransform(ox, oy);
+            e.Graphics.ScaleTransform(scale, scale);
+
             e.Graphics.DrawImageUnscaled(_image, 0, 0);
-            
+
             if (chbDebug.Checked)
             {
                 if (_points.Count >= 2)
@@ -115,6 +129,11 @@ namespace TowerDefense
 
                 enemy.Render(e.Graphics);
             }
+
+            scale = 1 / scale;
+
+            e.Graphics.ScaleTransform(scale, scale);
+            e.Graphics.TranslateTransform(-ox, -oy);
         }
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
