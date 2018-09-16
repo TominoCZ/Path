@@ -150,6 +150,20 @@ namespace PathHelper
             return list;
         }
 
+        public static PathTrace FromPoints(List<PointF> points)
+        {
+            PathTrace pt = new PathTrace();
+
+            for (var index = 0; index < points.Count; index++)
+            {
+                var p = points[index];
+
+                pt.Add(p.X, p.Y);
+            }
+
+            return pt;
+        }
+
         private TargetNode GetActiveNode()
         {
             if (_start == null)
